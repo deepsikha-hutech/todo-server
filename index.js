@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 const v1Routes = require("./routes/v1/v1.main");
+
 require("dotenv").config();
 
 app.use(cors());
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", v1Routes);
+app.use(express.json());
+
 // app.use("/api/v2", v2Routes);
 
 app.listen(3000, () => {
