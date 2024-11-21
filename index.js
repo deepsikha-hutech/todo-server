@@ -17,6 +17,11 @@ app.get("/", (req, res) => {
 app.use("/api/v1", v1Routes);
 app.use(express.json());
 
+app.post("/todos", async (req, res) => {
+  const response = await addTodoUtil(req.body);
+  res.status(response.statusCode).json(response);
+});
+
 // app.use("/api/v2", v2Routes);
 
 app.listen(3000, () => {

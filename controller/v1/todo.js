@@ -1,11 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const authV1Utils = require("../../utils/v1/auth");
+const todoV1Utils = require("../../utils/v1/todo");
+const mongoose = require("mongoose");
+const { route } = require("./auth");
+const Types = mongoose.Types;
+const ObjectId = Types.ObjectId;
 
 // define the home page route
-router.post("/add", (req, res) => {
+router.post("/add", async (req, res) => {
   try {
-    const { statusCode, ...response } = authV1Utils?.signupUser(req?.body);
+    const { statusCode, ...response } = await todoV1Utils?.createTodo({
+      ...req?.body,
+      userId: ObjectId.createFromHexString(req?.user?._id),
+    });
     res.status(statusCode).json(response);
   } catch (error) {
     res.status(500).json({
@@ -15,16 +22,67 @@ router.post("/add", (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
-  const { id, name, dhdhd, jkjaj } = req?.params;
-  const { statusCode, ...rest } = userV1Utils?.deleteUser(req?.params?.id);
-  res.status(statusCode).json(rest);
+router.put("/update/:id", async (req, res) => {
+  const { id } = req?.params;
+  try {
+    const { statusCode, ...response } = await todoV1Utils?.updateTodobyId(
+      id,
+      req?.body
+    );
+    res.status(statusCode).json(response);
+  } catch (error) {
+    res.status(500).json({
+      error: [error?.message?.replaceAll("'")],
+      message: "Internal Server Error",
+    });
+  }
 });
 
-router.get("/:id", (req, res) => {
-  const { id, name, dhdhd, jkjaj } = req?.params;
-  const { statusCode, ...rest } = userV1Utils?.deleteUser(req?.params?.id);
-  res.status(statusCode).json(rest);
+router.delete("/delete/:id", async (req, res) => {
+  const { id } = req?.params;
+  try {
+    const { statusCode, ...response } = await todoV1Utils?.deleteTodobyId(
+      id,
+      req?.body
+    );
+    res.status(statusCode).json(response);
+  } catch (error) {
+    res.status(500).json({
+      error: [error?.message?.replaceAll("'")],
+      message: "Internal Server Error",
+    });
+  }
+});
+
+router.get("/get/:id", async (req, res) => {
+  const { id } = req?.params;
+  try {
+    console.log({ id });
+    const { statusCode, ...response } = await todoV1Utils?.getTodobyId(id);
+    res.status(statusCode).json(response);
+  } catch (error) {
+    res.status(500).json({
+      error: [error?.message?.replaceAll("'")],
+      message: "Internal Server Error",
+    });
+  }
+});
+
+router.get("/getall", async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = null } = req?.query;
+    const { statusCode, ...response } = await todoV1Utils?.getAllTodo(
+      page,
+      limit,
+      search
+    );
+    res.status(statusCode).json(response);
+  } catch (error) {
+    res.status(500).json({
+      error: [error?.message?.replaceAll("'")],
+      message: "Internal Server Error",
+    });
+  }
 });
 
 module.exports = router;

@@ -71,11 +71,11 @@ async function signupUserUtil(userInfo) {
   }
 }
 
-function updateUserUtil(id, userInfo) {
-  console.log({ id, userInfo });
+// function updateUserUtil(id, userInfo) {
+//   console.log({ id, userInfo });
 
-  //save userInfo in DB
-  return { statusCode: 200, users: {}, deleted: true };
-}
+//   //save userInfo in DB
+//   return { statusCode: 200, users: {}, deleted: true };
+// }
 
-module.exports = { loginUserUtil, signupUserUtil, updateUserUtil };
+module.exports = { loginUserUtil, signupUserUtil };
