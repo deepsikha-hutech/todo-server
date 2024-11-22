@@ -31,4 +31,47 @@ const LOGIN_RULE = {
   },
 };
 
-module.exports = { SIGNUP_RULE, LOGIN_RULE };
+const NEW_TODO_RULE = {
+  title: {
+    mandatory: true,
+    allowNull: false,
+    type: "string",
+    minLength: 3,
+  },
+  description: {
+    type: "string",
+    mandatory: false,
+    allowNull: false,
+  },
+  addedOn: {
+    mandatory: false,
+    allowNull: false,
+    type: "string",
+  },
+  deadLine: {
+    mandatory: true,
+    allowNull: false,
+    type: "string",
+  },
+};
+
+const UPDATE_TODO_RULE = {
+  title: {
+    mandatory: false,
+    allowNull: false,
+    type: "string",
+    minLength: 3,
+  },
+  description: {
+    type: "string",
+    mandatory: false,
+    allowNull: false,
+  },
+  deadLine: {
+    mandatory: false,
+    allowNull: false,
+    type: "string",
+  },
+};
+
+module.exports = { SIGNUP_RULE, LOGIN_RULE, NEW_TODO_RULE, UPDATE_TODO_RULE };

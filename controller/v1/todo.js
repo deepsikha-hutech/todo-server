@@ -5,38 +5,51 @@ const mongoose = require("mongoose");
 const { route } = require("./auth");
 const Types = mongoose.Types;
 const ObjectId = Types.ObjectId;
+const { validatePayload } = require("../../utils/v1/middleware");
+const {
+  NEW_TODO_RULE,
+  UPDATE_TODO_RULE,
+} = require("../../utils/v1/validationrules");
 
 // define the home page route
-router.post("/add", async (req, res) => {
-  try {
-    const { statusCode, ...response } = await todoV1Utils?.createTodo({
-      ...req?.body,
-      userId: ObjectId.createFromHexString(req?.user?._id),
-    });
-    res.status(statusCode).json(response);
-  } catch (error) {
-    res.status(500).json({
-      error: [error?.message?.replaceAll("'")],
-      message: "Internal Server Error",
-    });
+router.post(
+  "/add",
+  validatePayload({ rule: NEW_TODO_RULE }),
+  async (req, res) => {
+    try {
+      const { statusCode, ...response } = await todoV1Utils?.createTodo({
+        ...req?.body,
+        userId: ObjectId.createFromHexString(req?.user?._id),
+      });
+      res.status(statusCode).json(response);
+    } catch (error) {
+      res.status(500).json({
+        error: [error?.message?.replaceAll("'")],
+        message: "Internal Server Error",
+      });
+    }
   }
-});
+);
 
-router.put("/update/:id", async (req, res) => {
-  const { id } = req?.params;
-  try {
-    const { statusCode, ...response } = await todoV1Utils?.updateTodobyId(
-      id,
-      req?.body
-    );
-    res.status(statusCode).json(response);
-  } catch (error) {
-    res.status(500).json({
-      error: [error?.message?.replaceAll("'")],
-      message: "Internal Server Error",
-    });
+router.put(
+  "/update/:id",
+  validatePayload({ rule: UPDATE_TODO_RULE }),
+  async (req, res) => {
+    const { id } = req?.params;
+    try {
+      const { statusCode, ...response } = await todoV1Utils?.updateTodobyId(
+        id,
+        req?.body
+      );
+      res.status(statusCode).json(response);
+    } catch (error) {
+      res.status(500).json({
+        error: [error?.message?.replaceAll("'")],
+        message: "Internal Server Error",
+      });
+    }
   }
-});
+);
 
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req?.params;
